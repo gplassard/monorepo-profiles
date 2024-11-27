@@ -8,11 +8,10 @@
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.gplassard.monorepoprofiles.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-    </extensions>
+    <projectListeners>
+        <listener
+                class="com.github.gplassard.monorepoprofiles.listeners.ProfilesConfigChangeListener"
+                topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </projectListeners>
 
-    <applicationListeners>
-        <listener class="com.github.gplassard.monorepoprofiles.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
