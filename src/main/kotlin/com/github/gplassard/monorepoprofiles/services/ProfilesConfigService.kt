@@ -20,7 +20,7 @@ import com.intellij.psi.search.GlobalSearchScope
 
 @Service(Service.Level.PROJECT)
 class ProfilesConfigService {
-    val mapper = ObjectMapper(YAMLFactory()).registerModule(KotlinModule.Builder().build())
+    private val mapper = ObjectMapper(YAMLFactory()).registerModule(KotlinModule.Builder().build())
 
     suspend fun loadConfigs(project: Project): Set<Profile> {
         val excludeFiles = readAction {

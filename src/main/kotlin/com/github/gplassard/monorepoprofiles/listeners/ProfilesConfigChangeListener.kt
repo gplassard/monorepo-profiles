@@ -1,12 +1,10 @@
 package com.github.gplassard.monorepoprofiles.listeners
 
 import com.github.gplassard.monorepoprofiles.Constants
+import com.github.gplassard.monorepoprofiles.helpers.PluginNotifications
 import com.github.gplassard.monorepoprofiles.services.ExcludeService
 import com.github.gplassard.monorepoprofiles.services.ProfilesConfigService
 import com.github.gplassard.monorepoprofiles.settings.PluginSettings
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleUtilCore
@@ -43,13 +41,9 @@ class ProfilesConfigChangeListener(private val project: Project, private val cs:
                     val toExclude = fromConfig.minus(fromState)
                     val toCancelExclude = fromState.minus(fromConfig)
 
-                    Notifications.Bus.notify(
-                        Notification(
-                            "MonorepoProfiles",
-                            "Profiles updated",
-                            "New profile ${profile.name} loaded from ${event.path}",
-                            NotificationType.INFORMATION,
-                        )
+                    PluginNotifications.info(
+                        "Profiles updated",
+                        "New profile ${profile.name} loaded from ${event.path}"
                     )
 
                     if (toExclude.isNotEmpty() || toCancelExclude.isNotEmpty()) {
@@ -58,13 +52,9 @@ class ProfilesConfigChangeListener(private val project: Project, private val cs:
 
                         pluginSettings.state.updateExcludedPaths(fromConfig)
 
-                        Notifications.Bus.notify(
-                            Notification(
-                                "MonorepoProfiles",
-                                "Excludes updated",
-                                "Updates paths added ${toExclude.size} and removed ${toCancelExclude.size}",
-                                NotificationType.INFORMATION,
-                            )
+                        PluginNotifications.info(
+                            "Excludes updated",
+                            "Updated paths added ${toExclude.size} and removed ${toCancelExclude.size}"
                         )
                     }
                 }
