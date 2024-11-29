@@ -8,9 +8,13 @@ intelliJPlatform = "2.1.0"
 kotlin = "2.1.0"
 kover = "0.8.3"
 qodana = "2024.2.6"
+jackson = "2.18.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+jacksonCore = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
+jacksonKotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
+jacksonYaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
