@@ -17,7 +17,26 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+This IntelliJ Platform Plugin helps you manage profiles in monorepo projects. It allows you to define profiles that include or exclude specific paths in your project, making it easier to work with large monorepo codebases.
+
+## Features
+
+- Automatically detects profile configuration files in your project
+- Applies profiles by excluding paths from the project
+- Provides a UI to select and toggle profiles on/off
+
+## Usage
+
+1. Create a `monorepo-profiles.yaml` file in your project with the following structure:
+   ```yaml
+   name: "Profile Name"
+   includedPaths:
+     - "path/to/include"
+   excludedPaths:
+     - "path/to/exclude"
+   ```
+2. The plugin will automatically detect and apply the profile
+3. To select and toggle profiles, use the "Select Monorepo Profiles" action from the Tools menu or press Ctrl+Alt+P
 
 This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
 
@@ -27,10 +46,10 @@ To keep everything working, do not remove `<!-- ... -->` sections.
 ## Installation
 
 - Using the IDE built-in plugin system:
-  
+
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "monorepo-profiles"</kbd> >
   <kbd>Install</kbd>
-  
+
 - Using JetBrains Marketplace:
 
   Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID) and install it by clicking the <kbd>Install to ...</kbd> button in case your IDE is running.

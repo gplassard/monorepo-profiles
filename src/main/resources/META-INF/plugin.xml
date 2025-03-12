@@ -14,4 +14,14 @@
                 topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
 
+    <actions>
+        <action id="com.github.gplassard.monorepoprofiles.ui.SelectProfilesAction"
+                class="com.github.gplassard.monorepoprofiles.ui.SelectProfilesAction"
+                text="Select Monorepo Profiles"
+                description="Select and toggle monorepo profiles">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt P"/>
+        </action>
+    </actions>
+
 </idea-plugin>
