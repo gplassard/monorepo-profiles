@@ -64,7 +64,7 @@ class ProfileGutterIconProvider : RelatedItemLineMarkerProvider() {
 
         // Create a navigation gutter icon builder with an icon indicating if the profile is active
         val builder = NavigationGutterIconBuilder.create(
-            if (isActive) AllIcons.General.InspectionsOK else AllIcons.General.InspectionsMixed
+            if (isActive) AllIcons.General.InspectionsOK else AllIcons.General.InspectionsPause
         )
             .setTarget(element)
             .setTooltipText(if (isActive) "Active profile" else "Inactive profile")
