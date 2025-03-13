@@ -35,6 +35,8 @@ This IntelliJ Platform Plugin helps you manage profiles in monorepo projects. It
    excludedPaths:
      - "path/to/exclude"
    ```
+   You can also define multiple profiles in a single file by separating them with `-----` (five hyphens), which is the standard YAML document separator.
+
 2. The plugin will automatically detect and apply the profile
 3. To select and toggle profiles, use the "Select Monorepo Profiles" action from the Tools menu or press Ctrl+Alt+P
 
