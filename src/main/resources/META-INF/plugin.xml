@@ -14,6 +14,12 @@
                 topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider
+                language="yaml"
+                implementationClass="com.github.gplassard.monorepoprofiles.ui.ProfileGutterIconProvider"/>
+    </extensions>
+
     <actions>
         <action id="com.github.gplassard.monorepoprofiles.ui.SelectProfilesAction"
                 class="com.github.gplassard.monorepoprofiles.ui.SelectProfilesAction"
