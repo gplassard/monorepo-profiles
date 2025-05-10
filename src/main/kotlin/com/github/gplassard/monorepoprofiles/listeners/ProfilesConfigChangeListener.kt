@@ -31,11 +31,13 @@ class ProfilesConfigChangeListener(private val project: Project, private val cs:
 
                     thisLogger().info("Loading profile configs from ${event.path}")
 
-                    val profile = profileConfigService.loadProfiles(project, virtualFile) ?: return@launch
+                    val profiles = profileConfigService.loadProfiles(project, virtualFile)
+                    if (profiles.isEmpty()) return@launch
 
-                    thisLogger().info("New profile $profile")
+                    thisLogger().info("New profiles $profiles")
 
-                    val fromConfig = profile.excludedPaths
+                    // Combine all excluded paths from all profiles
+                    val fromConfig = profiles.flatMap { it.excludedPaths }.toSet()
                     val fromState = pluginSettings.state.resolveExcludedPaths(project)
 
                     val toExclude = fromConfig.minus(fromState)
@@ -43,7 +45,7 @@ class ProfilesConfigChangeListener(private val project: Project, private val cs:
 
                     PluginNotifications.info(
                         "Profiles updated",
-                        "New profile ${profile.name} loaded from ${event.path}"
+                        "${profiles.size} profile(s) loaded from ${event.path}"
                     )
 
                     if (toExclude.isNotEmpty() || toCancelExclude.isNotEmpty()) {
