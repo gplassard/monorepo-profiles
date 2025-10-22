@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.dataformat.yaml.YAMLParser
 import com.github.gplassard.monorepoprofiles.Constants
 import com.github.gplassard.monorepoprofiles.model.Profile
 import com.github.gplassard.monorepoprofiles.model.ProfileConfig
@@ -34,29 +35,46 @@ class ProfilesConfigService {
         thisLogger().info("Profiles files $excludeFiles")
 
         return excludeFiles
-            .mapNotNull { loadProfiles(project, it) }
+            .flatMap { loadProfiles(project, it) }
             .toSet()
     }
 
-    suspend fun loadProfiles(project: Project, profileFile: VirtualFile): Profile? {
+    suspend fun loadProfiles(project: Project, profileFile: VirtualFile): List<Profile> {
         val document = readAction { FileDocumentManager.getInstance().getDocument(profileFile) }
-        val content = document?.text ?: return null
+        val content = document?.text ?: return emptyList()
+
+        val profiles = mutableListOf<Profile>()
+
         try {
-            val config = mapper.readValue(content, ProfileConfig::class.java)
-            val resolvedIncluded = config.includedPaths
-                .flatMap { path -> project.getBaseDirectories().map { it.resolveFromRootOrRelative(path) } }
-                .filterNotNull()
-                .toSet()
+            val factory = YAMLFactory()
+            val parser = factory.createParser(content)
 
-            val resolvedExcluded = config.excludedPaths
-                .flatMap { path -> project.getBaseDirectories().map { it.resolveFromRootOrRelative(path) } }
-                .filterNotNull()
-                .toSet()
+            while (!parser.isClosed) {
+                try {
+                    val config = mapper.readValue(parser, ProfileConfig::class.java)
+                    if (config != null) {
+                        val resolvedIncluded = config.includedPaths
+                            .flatMap { path -> project.getBaseDirectories().map { it.resolveFromRootOrRelative(path) } }
+                            .filterNotNull()
+                            .toSet()
 
-            return Profile(config.name, resolvedIncluded, resolvedExcluded)
+                        val resolvedExcluded = config.excludedPaths
+                            .flatMap { path -> project.getBaseDirectories().map { it.resolveFromRootOrRelative(path) } }
+                            .filterNotNull()
+                            .toSet()
+
+                        profiles.add(Profile(config.name, resolvedIncluded, resolvedExcluded))
+                    }
+                } catch (e: JacksonException) {
+                    thisLogger().warn("Error while parsing profile in file ${profileFile.path}: ${e.message}")
+                    // Continue to next document
+                }
+            }
+
+            return profiles
         } catch (e: JacksonException) {
-            thisLogger().warn("Error while parsing profile file ${profileFile.path} ${e.message}")
-            return null
+            thisLogger().warn("Error while parsing profile file ${profileFile.path}: ${e.message}")
+            return emptyList()
         }
     }
 }
