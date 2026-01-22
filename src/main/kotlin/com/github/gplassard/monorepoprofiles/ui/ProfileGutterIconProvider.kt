@@ -54,13 +54,10 @@ class ProfileGutterIconProvider : RelatedItemLineMarkerProvider() {
         // If no profile name was found, return
         if (profileName == null) return
 
-        // Get the active profile name from settings
+        // Get the active profile names from settings
         val project = element.project
         val pluginSettings = project.service<PluginSettings>()
-        val activeProfileName = pluginSettings.state.activeProfileName
-
-        // Determine if this profile is active
-        val isActive = profileName == activeProfileName
+        val isActive = pluginSettings.state.isProfileActive(profileName)
 
         // Create a navigation gutter icon builder with an icon indicating if the profile is active
         val builder = NavigationGutterIconBuilder.create(

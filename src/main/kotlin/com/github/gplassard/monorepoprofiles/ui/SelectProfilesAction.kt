@@ -27,18 +27,18 @@ class SelectProfilesAction : AnAction(), DumbAware {
             // Load all available profiles
             val profiles = profilesConfigService.loadConfigs(project)
 
-            // Get the currently active profile name
-            val activeProfileName = pluginSettings.state.activeProfileName
+            // Get the currently active profile names
+            val activeProfileNames = pluginSettings.state.activeProfileNames ?: mutableSetOf()
 
             withContext(Dispatchers.Main.immediate) {
                 // Show the dialog with the profiles
-                val dialog = SelectProfilesDialog(project, profiles, activeProfileName)
+                val dialog = SelectProfilesDialog(project, profiles, activeProfileNames)
                 if (dialog.showAndGet()) {
                     // User clicked OK, apply the changes
                     val selectedProfiles = dialog.getSelectedProfiles()
 
-                    // Update the active profile name in settings
-                    pluginSettings.state.activeProfileName = selectedProfiles.firstOrNull()?.name
+                    // Update the active profile names in settings
+                    pluginSettings.state.updateActiveProfiles(selectedProfiles.map { it.name }.toSet())
 
                     // Apply the selected profiles
                     val excludeService = project.service<ExcludeService>()

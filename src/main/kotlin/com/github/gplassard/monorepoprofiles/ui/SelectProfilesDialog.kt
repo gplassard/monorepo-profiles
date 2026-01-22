@@ -14,7 +14,7 @@ import javax.swing.JPanel
 class SelectProfilesDialog(
     project: Project,
     private val profiles: Set<Profile>,
-    private val activeProfileName: String?
+    private val activeProfileNames: Set<String>
 ) : DialogWrapper(project) {
 
     private val checkBoxList = CheckBoxList<Profile>()
@@ -32,7 +32,7 @@ class SelectProfilesDialog(
             checkBoxList.addItem(
                 profile,
                 profile.name,
-                activeProfileName != null && profile.name == activeProfileName // Check the active profile
+                activeProfileNames.contains(profile.name) // Check if profile is active
             )
         }
 
@@ -48,11 +48,9 @@ class SelectProfilesDialog(
             }
         }
 
-        // Initialize the selected profiles with the active profile
-        if (activeProfileName != null) {
-            profiles.find { it.name == activeProfileName }?.let {
-                selectedProfiles.add(it)
-            }
+        // Initialize the selected profiles with the active profiles
+        profiles.filter { activeProfileNames.contains(it.name) }.forEach { profile ->
+            selectedProfiles.add(profile)
         }
     }
 

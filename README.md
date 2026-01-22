@@ -27,7 +27,8 @@ This IntelliJ Platform Plugin helps you manage profiles in monorepo projects. It
 
 ## Usage
 
-1. Create a `monorepo-profiles.yaml` file in your project with the following structure:
+1. Create a `monorepo-profiles.yaml` file in your project with either a single profile object or an array of profile objects.
+   Single profile:
    ```yaml
    name: "Profile Name"
    includedPaths:
@@ -35,7 +36,19 @@ This IntelliJ Platform Plugin helps you manage profiles in monorepo projects. It
    excludedPaths:
      - "path/to/exclude"
    ```
-   You can also define multiple profiles in a single file by separating them with `-----` (five hyphens), which is the standard YAML document separator.
+   Multiple profiles (array):
+   ```yaml
+   - name: "Frontend Profile"
+     includedPaths:
+       - "frontend"
+     excludedPaths:
+       - "frontend/node_modules"
+   - name: "Backend Profile"
+     includedPaths:
+       - "backend"
+     excludedPaths:
+       - "backend/target"
+   ```
 
 2. The plugin will automatically detect and apply the profile
 3. To select and toggle profiles, use the "Select Monorepo Profiles" action from the Tools menu or press Ctrl+Alt+P

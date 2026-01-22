@@ -36,8 +36,10 @@ class ProfilesConfigChangeListener(private val project: Project, private val cs:
 
                     thisLogger().info("New profiles $profiles")
 
-                    // Combine all excluded paths from all profiles
-                    val fromConfig = profiles.flatMap { it.excludedPaths }.toSet()
+                    // Only apply excluded paths from active profiles
+                    val activeProfileNames = pluginSettings.state.activeProfileNames ?: mutableSetOf()
+                    val activeProfiles = profiles.filter { activeProfileNames.contains(it.name) }
+                    val fromConfig = activeProfiles.flatMap { it.excludedPaths }.toSet()
                     val fromState = pluginSettings.state.resolveExcludedPaths(project)
 
                     val toExclude = fromConfig.minus(fromState)
