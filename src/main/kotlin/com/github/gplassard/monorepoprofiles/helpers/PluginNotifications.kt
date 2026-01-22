@@ -18,5 +18,27 @@ class PluginNotifications {
                 )
             )
         }
+
+        fun warning(title: String, message: String) {
+            Notifications.Bus.notify(
+                Notification(
+                    MyBundle.message("notifications.group"),
+                    title,
+                    message,
+                    NotificationType.WARNING,
+                )
+            )
+        }
+
+        fun error(title: String, message: String) {
+            Notifications.Bus.notify(
+                Notification(
+                    MyBundle.message("notifications.group"),
+                    title,
+                    message,
+                    NotificationType.ERROR,
+                )
+            )
+        }
     }
 }
