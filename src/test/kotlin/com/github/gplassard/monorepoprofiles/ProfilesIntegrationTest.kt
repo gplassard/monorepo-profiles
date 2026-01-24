@@ -10,7 +10,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import kotlinx.coroutines.runBlocking
 
 class ProfilesIntegrationTest : BasePlatformTestCase() {
-
     fun testLoadConfigsResolvesIncludedAndExcludedPaths() {
         val includedDir = myFixture.tempDirFixture.findOrCreateDir("app")
         val excludedDir = myFixture.tempDirFixture.findOrCreateDir("out")
@@ -35,6 +34,27 @@ class ProfilesIntegrationTest : BasePlatformTestCase() {
         assertEquals("Dev", profile.name)
         assertTrue(profile.includedPaths.any { it.path == includedDir.path })
         assertTrue(profile.excludedPaths.any { it.path == excludedDir.path })
+    }
+
+    fun testExcludeServiceUpdatesModuleExcludes() {
+        val excludedDir = myFixture.tempDirFixture.findOrCreateDir("excluded")
+        val excludeService = project.service<ExcludeService>()
+
+        runBlocking {
+            excludeService.excludePaths(module, setOf(excludedDir))
+        }
+
+        val hasExclude = ModuleRootManager.getInstance(module).contentEntries
+            .any { entry -> entry.excludeFolderUrls.contains(excludedDir.url) }
+        assertTrue(hasExclude)
+
+        runBlocking {
+            excludeService.cancelExcludePaths(module, setOf(excludedDir))
+        }
+
+        val hasExcludeAfterCancel = ModuleRootManager.getInstance(module).contentEntries
+            .any { entry -> entry.excludeFolderUrls.contains(excludedDir.url) }
+        assertFalse(hasExcludeAfterCancel)
     }
 
     fun testPluginSettingsResolveExcludedPaths() {
