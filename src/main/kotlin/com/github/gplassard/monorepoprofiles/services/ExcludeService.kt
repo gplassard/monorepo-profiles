@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import java.util.function.Consumer
 
@@ -35,6 +36,8 @@ class ExcludeService {
         writeAction {
             for (entry in model.contentEntries) {
                 for (path in paths) {
+                    val entryFile = entry.file ?: continue
+                    if (!VfsUtilCore.isAncestor(entryFile, path, false)) continue
                     processor.accept(Pair(entry, path))
                 }
             }
