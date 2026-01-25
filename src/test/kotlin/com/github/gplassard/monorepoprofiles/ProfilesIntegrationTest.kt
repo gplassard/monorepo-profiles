@@ -10,6 +10,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import kotlinx.coroutines.runBlocking
 
 class ProfilesIntegrationTest : BasePlatformTestCase() {
+    override fun runInDispatchThread(): Boolean = false
+
     fun testLoadConfigsResolvesIncludedAndExcludedPaths() {
         val includedDir = myFixture.tempDirFixture.findOrCreateDir("app")
         val excludedDir = myFixture.tempDirFixture.findOrCreateDir("out")
