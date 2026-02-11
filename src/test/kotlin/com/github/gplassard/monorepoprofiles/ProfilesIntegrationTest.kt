@@ -68,4 +68,35 @@ class ProfilesIntegrationTest : BasePlatformTestCase() {
         val resolved = settings.state.resolveExcludedPaths(project)
         assertEquals(setOf(excludedDir.path), resolved.map { it.path }.toSet())
     }
+
+    fun testLoadConfigsSortsByPriority() {
+        myFixture.tempDirFixture.findOrCreateDir("app1")
+        myFixture.tempDirFixture.findOrCreateDir("app2")
+
+        val yamlHigh = """
+            name: "High"
+            priority: 10
+            includedPaths:
+              - "app1"
+        """.trimIndent()
+
+        val yamlLow = """
+            name: "Low"
+            priority: 1
+            includedPaths:
+              - "app2"
+        """.trimIndent()
+
+        myFixture.addFileToProject("app1/${Constants.PROFILE_FILE_NAME}", yamlHigh)
+        myFixture.addFileToProject("app2/${Constants.PROFILE_FILE_NAME}", yamlLow)
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        val profiles = runBlocking {
+            project.service<ProfilesConfigService>().loadConfigs(project)
+        }
+
+        assertEquals(2, profiles.size)
+        assertEquals(listOf("High", "Low"), profiles.map { it.name })
+        assertEquals(listOf(10, 1), profiles.map { it.priority })
+    }
 }
