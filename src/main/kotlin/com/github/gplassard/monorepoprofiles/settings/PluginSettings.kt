@@ -20,6 +20,11 @@ class PluginSettingsState : BaseState() {
     var activeProfileName by string()
     var excludedPaths by stringSet()
 
+    fun updateActiveProfileName(name: String?) {
+        activeProfileName = name
+        this.incrementModificationCount()
+    }
+
     fun updateExcludedPaths(files: Set<VirtualFile>) {
         thisLogger().info("Updating excluded paths: ${files.map { it.path }}")
         excludedPaths = files.map { it.path }.toMutableSet()
